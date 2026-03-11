@@ -17,6 +17,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install Playwright browser
+        uses: python -m playwright install chromium
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
