@@ -14,30 +14,30 @@ jobs:
       API_TOKEN: ${{ secrets.API_TOKEN }}
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Install Playwright browser
-        run: python -m playwright install chromium
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Run selected tests
-        run: |
-          if [ "${{ github.event.inputs.test_type }}" = "smoke" ]; then
-            pytest -v -m smoke
-          elif [ "${{ github.event.inputs.test_type }}" = "regression" ]; then
-            pytest -v -m regression
-          elif [ "${{ github.event.inputs.test_type }}" = "api" ]; then
-            pytest -v -m api
-          elif [ "${{ github.event.inputs.test_type }}" = "ui" ]; then
-            pytest -v -m ui
-          else
-            pytest -v
-          fi
+    - name: Checkout repository
+      uses: actions/checkout@v4
+  
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+  
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+  
+    - name: Install Playwright browser
+      run: python -m playwright install --with-deps chromium
+  
+    - name: Run selected tests
+      run: |
+        if [ "${{ github.event.inputs.test_type }}" = "smoke" ]; then
+          pytest -v -m smoke
+        elif [ "${{ github.event.inputs.test_type }}" = "regression" ]; then
+          pytest -v -m regression
+        elif [ "${{ github.event.inputs.test_type }}" = "api" ]; then
+          pytest -v -m api
+        elif [ "${{ github.event.inputs.test_type }}" = "ui" ]; then
+          pytest -v -m ui
+        else
+          pytest -v
+        fi
