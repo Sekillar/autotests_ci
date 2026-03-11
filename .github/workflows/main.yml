@@ -2,6 +2,18 @@ name: CI demo
 
 on:
   workflow_dispatch:
+    inputs:
+      test_type:
+        description: 'What tests to run'
+        required: true
+        default: 'smoke'
+        type: choice
+        options:
+          - all
+          - smoke
+          - regression
+          - api
+          - ui
   push:
     branches: [ main ]
 
@@ -12,6 +24,9 @@ jobs:
     env:
       BASE_URL: ${{ vars.BASE_URL }}
       API_TOKEN: ${{ secrets.API_TOKEN }}
+      AUTH_ACCESS_TOKEN: ${{ secrets.AUTH_ACCESS_TOKEN }}
+      AUTH_ID_TOKEN: ${{ secrets.AUTH_ID_TOKEN }}
+      AUTH_REFRESH_TOKEN: ${{ secrets.AUTH_REFRESH_TOKEN }}
 
     steps:
     - name: Checkout repository
