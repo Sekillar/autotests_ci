@@ -9,9 +9,20 @@ jobs:
   run-tests:
     runs-on: ubuntu-latest
 
+    env:
+      BASE_URL: ${{ vars.BASE_URL }}
+      API_TOKEN: ${{ secrets.API_TOKEN }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Print message
-        run: echo "CI works!"
+      - name: Check variables
+        run: |
+          echo "BASE_URL is $BASE_URL"
+          if [ -z "$API_TOKEN" ]; then
+            echo "API_TOKEN is empty"
+            exit 1
+          else
+            echo "API_TOKEN exists"
+          fi
