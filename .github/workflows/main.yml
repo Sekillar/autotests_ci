@@ -28,5 +28,16 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run pytest
-        run: pytest -v
+      - name: Run selected tests
+        run: |
+          if [ "${{ github.event.inputs.test_type }}" = "smoke" ]; then
+            pytest -v -m smoke
+          elif [ "${{ github.event.inputs.test_type }}" = "regression" ]; then
+            pytest -v -m regression
+          elif [ "${{ github.event.inputs.test_type }}" = "api" ]; then
+            pytest -v -m api
+          elif [ "${{ github.event.inputs.test_type }}" = "ui" ]; then
+            pytest -v -m ui
+          else
+            pytest -v
+          fi
