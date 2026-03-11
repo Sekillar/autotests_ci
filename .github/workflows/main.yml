@@ -17,12 +17,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Check variables
-        run: |
-          echo "BASE_URL is $BASE_URL"
-          if [ -z "$API_TOKEN" ]; then
-            echo "API_TOKEN is empty"
-            exit 1
-          else
-            echo "API_TOKEN exists"
-          fi
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run pytest
+        run: pytest -v
