@@ -93,15 +93,30 @@ def auth_storage(playwright: Playwright, base_url: str):
 def authorized_page(playwright: Playwright, base_url: str, auth_storage):
     browser = playwright.chromium.launch(headless=True)
 
-    access_token = os.getenv("AUTH_ACCESS_TOKEN")
-    id_token = os.getenv("AUTH_ID_TOKEN")
+    is_ci = os.getenv("CI") == "true"
 
-    if os.getenv("CI") and access_token and id_token:
+    if is_ci:
+        access_token = os.getenv("AUTH_ACCESS_TOKEN")
+        id_token = os.getenv("AUTH_ID_TOKEN")
+        refresh_token = os.getenv("AUTH_REFRESH_TOKEN")
+        expires_in = os.getenv("AUTH_EXPIRES_IN", "3600")
+        token_type = os.getenv("AUTH_TOKEN_TYPE", "Bearer")
+        identifier = os.getenv("AUTH_IDENTIFIER", "+7 910 499 28 53")
+
+        if not access_token or not id_token or not refresh_token:
+            raise ValueError("CI secrets for auth are not fully set")
+
         context = browser.new_context()
+
         auth_data = {
             "AccessToken": access_token,
             "IdToken": id_token,
+            "RefreshToken": refresh_token,
+            "ExpiresIn": int(expires_in),
+            "TokenType": token_type,
+            "identifier": identifier,
         }
+
         auth_json = json.dumps(auth_data)
         auth_json_js_literal = json.dumps(auth_json)
 
@@ -115,5 +130,6 @@ def authorized_page(playwright: Playwright, base_url: str, auth_storage):
 
     page = context.new_page()
     yield page
+
     context.close()
     browser.close()
