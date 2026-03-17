@@ -93,6 +93,7 @@ def auth_storage(playwright: Playwright, base_url: str):
 def authorized_page(playwright: Playwright, base_url: str, auth_storage):
     browser = playwright.chromium.launch(headless=True)
 
+
     is_ci = os.getenv("CI") == "true"
 
     if is_ci:
